@@ -1,0 +1,1 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/7avj5pv121l5mys8/branch/master?svg=true)](https://ci.appveyor.com/project/Alex-nikiforova/hw-2-3-1-changeofdate/branch/master)

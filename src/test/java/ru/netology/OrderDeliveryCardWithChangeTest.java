@@ -4,7 +4,7 @@ import com.codeborne.selenide.Condition;
 import com.github.javafaker.Faker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
+import org.openqa.selenium.Keys;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -16,7 +16,7 @@ public class OrderDeliveryCardWithChangeTest {
     Faker faker = new Faker(new Locale("ru"));
     DateTimeFormatter df = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
-    private final DataGeneratorForCardOrder cardOrder = new DataGeneratorForCardOrder(faker.name().fullName(), faker.address().city(), faker.phoneNumber().phoneNumber(), LocalDate.now().plusDays(3).format(df), LocalDate.now().plusDays(7).format(df));
+    private final DataGeneratorForCardOrder cardOrder = new DataGeneratorForCardOrder(faker.name().fullName(), faker.address().city(), faker.phoneNumber().phoneNumber(), LocalDate.now().plusDays(4).format(df), LocalDate.now().plusDays(7).format(df));
 
     @BeforeEach
     void setUpAll() {
@@ -27,6 +27,7 @@ public class OrderDeliveryCardWithChangeTest {
     void shouldReturnSuccessfullyIfChangedDate() {
 
         $("[placeholder='Город']").setValue(cardOrder.getCity());
+        $("[placeholder='Дата встречи']").sendKeys(Keys.chord(Keys.SHIFT,Keys.HOME), Keys.BACK_SPACE);
         $("[placeholder='Дата встречи']").setValue(cardOrder.getMeetingDate1());
         $("[name='name']").setValue(cardOrder.getFullName());
         $("[name='phone']").setValue(cardOrder.getMobilePhone());
@@ -38,6 +39,7 @@ public class OrderDeliveryCardWithChangeTest {
         $("[data-test-id='success-notification'] > .notification__content")
                 .shouldHave(Condition.text("Встреча успешно запланирована на " + cardOrder.getMeetingDate1()))
                 .shouldBe(Condition.visible);
+        $("[placeholder='Дата встречи']").sendKeys(Keys.chord(Keys.SHIFT,Keys.HOME), Keys.BACK_SPACE);
         $("[placeholder='Дата встречи']").setValue(cardOrder.getMeetingDate2());
         $(withText("Запланировать")).click();
         $("[data-test-id='replan-notification'] > .notification__title")

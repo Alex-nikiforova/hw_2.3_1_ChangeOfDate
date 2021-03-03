@@ -1,8 +1,9 @@
 package ru.netology.test;
 
 import com.codeborne.selenide.Condition;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import com.codeborne.selenide.logevents.SelenideLogger;
+import io.qameta.allure.selenide.AllureSelenide;
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.Keys;
 import ru.netology.data.DataGeneratorForCardOrder;
 
@@ -16,12 +17,23 @@ public class OrderDeliveryCardWithChangeTest {
 
     DataGeneratorForCardOrder.UserInfo user = getUserInfo();
 
+    @BeforeAll
+    static void setUpAll() {
+        SelenideLogger.addListener("allure", new AllureSelenide());
+    }
+
+    @AfterAll
+    static void tearDownAll() {
+        SelenideLogger.removeListener("allure");
+    }
+
     @BeforeEach
-    void setUpAll() {
+    void setUp() {
         open("http://localhost:9999");
     }
 
     @Test
+    @DisplayName("Успешная перепланировка даты")
     void shouldReturnSuccessfullyIfChangedDate() {
 
         $("[placeholder='Город']").setValue(user.getCity());
@@ -56,6 +68,7 @@ public class OrderDeliveryCardWithChangeTest {
     }
 
     @Test
+    @DisplayName("Успешная регистрация с именем с буквой 'Ё'")
     void shouldSuccessfullyIfNameWithLetterЁ() {
         $("[placeholder='Город']").setValue(user.getCity());
         $("[placeholder='Дата встречи']").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.BACK_SPACE);
@@ -73,6 +86,7 @@ public class OrderDeliveryCardWithChangeTest {
     }
 
     @Test
+    @DisplayName("Получение ошибки при вводе невалидного номера телефона")
     void shouldGetErrorIfInvalidPhoneNumber() {
         $("[placeholder='Город']").setValue(user.getCity());
         $("[placeholder='Дата встречи']").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.BACK_SPACE);

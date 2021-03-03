@@ -54,4 +54,35 @@ public class OrderDeliveryCardWithChangeTest {
                 .shouldHave(text("Встреча успешно запланирована на " + user.getReplanDate()))
                 .shouldBe(Condition.visible);
     }
+
+    @Test
+    void shouldSuccessfullyIfNameWithLetterЁ() {
+        $("[placeholder='Город']").setValue(user.getCity());
+        $("[placeholder='Дата встречи']").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.BACK_SPACE);
+        $("[placeholder='Дата встречи']").setValue(user.getMeetingDate());
+        $("[name='name']").setValue("Селивёрстова Алёна");
+        $("[name='phone']").setValue(user.getMobilePhone());
+        $(".checkbox__box").click();
+        $(withText("Запланировать")).click();
+        $("[data-test-id='success-notification'] > .notification__title")
+                .shouldHave(exactText("Успешно!"))
+                .shouldBe(Condition.visible);
+        $("[data-test-id='success-notification'] > .notification__content")
+                .shouldHave(text("Встреча успешно запланирована на " + user.getMeetingDate()))
+                .shouldBe(Condition.visible);
+    }
+
+    @Test
+    void shouldGetErrorIfInvalidPhoneNumber() {
+        $("[placeholder='Город']").setValue(user.getCity());
+        $("[placeholder='Дата встречи']").sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME), Keys.BACK_SPACE);
+        $("[placeholder='Дата встречи']").setValue(user.getMeetingDate());
+        $("[name='name']").setValue(user.getFullName());
+        $("[name='phone']").setValue("7903");
+        $(".checkbox__box").click();
+        $(withText("Запланировать")).click();
+        $("[data-test-id='phone']")
+                .shouldHave(text("Номер телефона введен не полностью. Проверьте, что номер ваш и введен корректно."))
+                .shouldBe(Condition.visible);
+    }
 }

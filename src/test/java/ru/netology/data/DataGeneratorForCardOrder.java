@@ -32,6 +32,4 @@ public class DataGeneratorForCardOrder {
                 LocalDate.now().plusDays(4).format(df),
                 LocalDate.now().plusDays(7).format(df));
     }
-
-
 }
